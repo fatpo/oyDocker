@@ -10,13 +10,13 @@ docker run -d \
 
 创建网络：
 ```
- docker network create --driver bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 zoonet
+docker network create --driver bridge --subnet=172.19.0.0/16 --gateway=172.19.0.1 zoonet
 ```
 创建挂载目录：
 ```
-mkdir -p /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node1
-mkdir -p /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node2
-mkdir -p /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node3
+mkdir -p /Users/apple/dockerdata/zookeeper_home/node1
+mkdir -p /Users/apple/dockerdata/zookeeper_home/node2
+mkdir -p /Users/apple/dockerdata/zookeeper_home/node3
 ```
 创建编排配置： `cat docker-compose.yml`
 ```
@@ -31,15 +31,15 @@ services:
     ports:
       - 2181:2181
     volumes: # 挂载数据
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node1/data:/data
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node1/datalog:/datalog
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node1/logs:/logs
+      - /Users/apple/dockerdata/zookeeper_home/node1/data:/data
+      - /Users/apple/dockerdata/zookeeper_home/node1/datalog:/datalog
+      - /Users/apple/dockerdata/zookeeper_home/node1/logs:/logs
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     networks:
       default:
-        ipv4_address: 172.18.0.11
+        ipv4_address: 172.19.0.11
 
   zoo2:
     image: zookeeper
@@ -49,15 +49,15 @@ services:
     ports:
       - 2182:2181
     volumes: # 挂载数据
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node2/data:/data
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node2/datalog:/datalog
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node2/logs:/logs
+      - /Users/apple/dockerdata/zookeeper_home/node2/data:/data
+      - /Users/apple/dockerdata/zookeeper_home/node2/datalog:/datalog
+      - /Users/apple/dockerdata/zookeeper_home/node2/logs:/logs
     environment:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zoo3:2888:3888;2181
     networks:
       default:
-        ipv4_address: 172.18.0.12
+        ipv4_address: 172.19.0.12
 
   zoo3:
     image: zookeeper
@@ -67,15 +67,15 @@ services:
     ports:
       - 2183:2181
     volumes: # 挂载数据
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node3/data:/data
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node3/datalog:/datalog
-      - /Users/ouyang/docker_home/zookeeper/zookeeper-cluster/node3/logs:/logs
+      - /Users/apple/dockerdata/zookeeper_home/node3/data:/data
+      - /Users/apple/dockerdata/zookeeper_home/node3/datalog:/datalog
+      - /Users/apple/dockerdata/zookeeper_home/node3/logs:/logs
     environment:
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
     networks:
       default:
-        ipv4_address: 172.18.0.13
+        ipv4_address: 172.19.0.13
 
 networks: # 自定义网络
   default:
@@ -94,13 +94,13 @@ Creating zookeeper_zoo2_1 ... done
 host> docker run -it -d --name  zkclient zookeeper
 host>docker exec -it 2d523db953ea bash
 
-docker> ./zkCli.sh -server 172.18.0.11:2181,172.18.0.12:2181,172.18.0.13:2183
+docker> ./zkCli.sh -server 172.19.0.11:2181,172.19.0.12:2181,172.19.0.13:2183
 2020-10-26 03:03:42,941 [myid:] - INFO  [main:ClientCnxn@1716] - zookeeper.request.timeout value is 0. feature enabled=false
 Welcome to ZooKeeper!
 JLine support is enabled
-2020-10-26 03:03:43,042 [myid:172.18.0.11:2181] - INFO  [main-SendThread(172.18.0.11:2181):ClientCnxn$SendThread@1167] - Opening socket connection to server 172.18.0.11/172.18.0.11:2181.
-2020-10-26 03:03:43,045 [myid:172.18.0.11:2181] - INFO  [main-SendThread(172.18.0.11:2181):ClientCnxn$SendThread@1169] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
-docker> [zk: 172.18.0.11:2181,172.18.0.12:2181,172.18.0.13:2181(CONNECTING) 0]
+2020-10-26 03:03:43,042 [myid:172.19.0.11:2181] - INFO  [main-SendThread(172.19.0.11:2181):ClientCnxn$SendThread@1167] - Opening socket connection to server 172.19.0.11/172.19.0.11:2181.
+2020-10-26 03:03:43,045 [myid:172.19.0.11:2181] - INFO  [main-SendThread(172.19.0.11:2181):ClientCnxn$SendThread@1169] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
+docker> [zk: 172.19.0.11:2181,172.19.0.12:2181,172.19.0.13:2181(CONNECTING) 0]
 ```
 看看集群里面每个节点服务状态：
 节点1：follower
